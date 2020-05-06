@@ -73,4 +73,12 @@ jobs:
 
           docker tag $IMAGE_NAME $IMAGE_ID:$VERSION
           docker push $IMAGE_ID:$VERSION
-
+      - name: Publish Docker
+        uses: elgohr/Publish-Docker-Github-Action@2.14
+        with:
+          # The name of the image you would like to push
+          name: zoosh/node-dev
+          # The login username for the registry
+          username: ${{ secrets.DOCKER_USERNAME }}
+          # The login password for the registry
+          password: ${{ secrets.DOCKER_PASSWORD }}
