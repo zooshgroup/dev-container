@@ -1,7 +1,7 @@
 FROM ubuntu:latest
 
 # install essentials and tools we need for other steps
-RUN apt-get update && apt-get install -y git sudo wget vim curl ca-certificates --no-install-recommends
+RUN apt-get update && apt-get install -y git sudo wget vim curl ssh ca-certificates --no-install-recommends
 
 # Setup timezone
 ARG DEBIAN_FRONTEND=noninteractive
