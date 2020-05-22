@@ -1,7 +1,7 @@
 FROM ubuntu:latest
 
 # install essentials and tools we need for other steps
-RUN apt-get update && apt-get install -y git sudo wget vim curl ca-certificates --no-install-recommends
+RUN apt-get update && apt-get install -y git sudo wget vim curl ca-certificates ssh --no-install-recommends
 
 # Setup timezone
 ARG DEBIAN_FRONTEND=noninteractive
@@ -13,11 +13,10 @@ RUN dpkg-reconfigure --frontend noninteractive tzdata
 # Add user so we don't run everything as root
 # This is needed to run puppeteer whithout disabling the sandbox
 # Added the user also to the sudo group and set its password as zoosh
-RUN groupadd --gid 1000 zoosh && useradd zoosh --uid 1000 --gid zoosh && echo "zoosh:zoosh" | chpasswd && adduser zoosh sudo
+RUN groupadd --gid 1000 zoosh && adduser --uid 1000 --ingroup zoosh zoosh && echo "zoosh:zoosh" | chpasswd && adduser zoosh sudo
 # we will need the downloads dir later for chromium
-RUN  mkdir -p /home/zoosh/Downloads && chown -R zoosh:zoosh /home/zoosh
+RUN  mkdir -p /home/zoosh/Downloads && mkdir -p /home/zoosh/.ssh && chown -R zoosh:zoosh /home/zoosh
 WORKDIR /home/zoosh
-
 
 # Install node
 RUN curl -sL https://deb.nodesource.com/setup_12.x | bash -
@@ -30,6 +29,8 @@ RUN apt-get install -y gconf-service libappindicator3-1 libasound2 libatk1.0-0 l
 # install chrome
 RUN wget -nv https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
 RUN dpkg -i google-chrome-stable_current_amd64.deb; apt-get -fy install
+RUN rm google-chrome-stable_current_amd64.deb
+
 # set env vars so puppeteer will use downloaded chrome version
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
 ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/google-chrome
@@ -38,3 +39,6 @@ ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/google-chrome
 # Run everything after as non-privileged user.
 USER zoosh
 
+# Add github and bitbucket to known hosts
+RUN ssh-keyscan -t rsa -H github.com >> ~/.ssh/known_hosts
+RUN ssh-keyscan -t rsa -H bitbucket.org >> ~/.ssh/known_hosts

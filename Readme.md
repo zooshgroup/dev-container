@@ -5,7 +5,7 @@ This is a base container to be used for local nodejs application development. Go
 
 ## How to use
 This container is published to docker hub with the name 'zoosh/node-dev'. Add `image: zoosh/node-dev:latest` to the project docker compose file to use the latest version.
-To run chromium without issues this container is setup with a non root user, to make things easier for development I recommend also adding sysadmin permissions back to the container in the docker compose file:
+To run chrome without issues this container is setup with a non root user, to make things easier for development I recommend also adding sysadmin permissions back to the container in the docker compose file:
 ```
     image: zoosh/node-dev:latest
     cap_add:
