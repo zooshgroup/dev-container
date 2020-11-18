@@ -15,7 +15,8 @@ RUN dpkg-reconfigure --frontend noninteractive tzdata
 # Added the user also to the sudo group and set its password as zoosh
 RUN groupadd --gid 1000 zoosh && adduser --uid 1000 --ingroup zoosh zoosh && echo "zoosh:zoosh" | chpasswd && adduser zoosh sudo
 # we will need the downloads dir later for chromium
-RUN  mkdir -p /home/zoosh/Downloads && mkdir -p /home/zoosh/.ssh && chown -R zoosh:zoosh /home/zoosh
+# we need to setup the app dir to avoid permission issues when mounting a volume
+RUN  mkdir -p /home/zoosh/Downloads && mkdir -p /home/zoosh/app && mkdir -p /home/zoosh/.ssh && chown -R zoosh:zoosh /home/zoosh
 WORKDIR /home/zoosh
 
 # Install node
